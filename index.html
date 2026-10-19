@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rulehunt - find the rule</title>
+<meta name="description" content="A cellular automaton puzzle. Given the start row and the row after a few steps, set the rule table so the automaton lands on the target.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1>rulehunt</h1>
+    <p class="tagline">find the rule that gets you there</p>
+  </header>
+  <section id="hud"><span id="lvl"></span><span id="info"></span></section>
+
+  <p class="label">start</p>
+  <div id="start" class="strip"></div>
+  <p class="label">your rule, step by step</p>
+  <div id="run"></div>
+  <p class="label">target after <span id="n"></span> step(s)</p>
+  <div id="target" class="strip"></div>
+  <p id="msg"></p>
+
+  <p class="label">rule table <span id="rulenum"></span></p>
+  <div id="table"></div>
+  <div class="row">
+    <button id="clear" class="secondary">clear table</button>
+    <button id="prev" class="secondary">prev level</button>
+    <button id="next" class="secondary">next level</button>
+  </div>
+
+  <details>
+    <summary>how to play</summary>
+    <p>Each row is made from the one above. A cell looks at itself and its two neighbours (the row wraps around) and the rule table says what it becomes. Click a box in the table to flip its output.</p>
+    <p>Make the last row of your run equal the target. Red cells in your last row show where you are off. You can also type a rule number.</p>
+    <p>Score is how many 1s are in your table. Par is the smallest table that works. Some levels have several valid rules, others exactly one.</p>
+  </details>
+  <h2>levels</h2>
+  <div id="levels"></div>
+  <footer><a href="https://github.com/TheRealAlexxx/rulehunt">source</a> - MIT</footer>
+</main>
+<script src="ca.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
