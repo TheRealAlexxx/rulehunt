@@ -11,6 +11,8 @@ also a rule number from 0 to 255. Early levels need one step, which you can read
 off directly. Later ones need up to six, where you have to reason about what the
 table must do or hill-climb on the red mismatch cells.
 
+Open https://therealalexxx.github.io/rulehunt/#daily for the level of the day (same for everyone per UTC date). Solving it offers a copy-able result line.
+
 Score is the number of 1s in your table. Par is the smallest table that works.
 Winning shows how many rules solve the level: some have exactly one, a few have
 several.
@@ -30,7 +32,7 @@ node gen.js <seed> <count>
 ## Tests
 
 ```
-node --test test.js
+node --test test.js test-daily.js
 ```
 
 Checks rule 90 and rule 30 against known rows, the wrap-around, a brute-force
