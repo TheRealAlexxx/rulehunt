@@ -5,11 +5,12 @@
     get() { try { return JSON.parse(localStorage.getItem('rulehunt') || '{}'); } catch (e) { return {}; } },
     set(v) { try { localStorage.setItem('rulehunt', JSON.stringify(v)); } catch (e) { /* private mode */ } },
   };
-  let levels = [], idx = 0, rule = 0, lv = null;
+  let levels = [], idx = 0, rule = 0, lv = null, daily = false;
 
   fetch('levels.json').then((r) => r.json()).then((d) => {
     levels = d;
-    const h = parseInt(location.hash.slice(1), 10);
+    daily = location.hash === '#daily';
+    const h = daily ? Daily.dailyIndex(new Date(), d.length) + 1 : parseInt(location.hash.slice(1), 10);
     buildList();
     load(h > 0 && h <= d.length ? h - 1 : Math.min(store.get().cur || 0, d.length - 1));
   });
@@ -26,7 +27,8 @@
   function load(i) {
     idx = i; lv = levels[i]; rule = 0;
     const s = store.get(); s.cur = i; store.set(s);
-    history.replaceState(null, '', '#' + (i + 1));
+    history.replaceState(null, '', daily ? '#daily' : '#' + (i + 1));
+    $('share').hidden = true;
     $('lvl').textContent = 'level ' + lv.id + ' of ' + levels.length;
     $('n').textContent = lv.steps;
     strip($('start'), CA.toBits(lv.start));
@@ -77,6 +79,7 @@
       const s = store.get(); s.best = s.best || {};
       if (!s.best[idx] || ones < s.best[idx]) s.best[idx] = ones;
       store.set(s); refreshList();
+      $('share').hidden = !daily;
     } else { m.className = ''; m.textContent = ''; }
   }
 
@@ -84,7 +87,7 @@
     const box = $('levels');
     levels.forEach((l, i) => {
       const b = document.createElement('button');
-      b.textContent = l.id; b.addEventListener('click', () => load(i)); box.appendChild(b);
+      b.textContent = l.id; b.addEventListener('click', () => { daily = false; load(i); }); box.appendChild(b);
     });
   }
   function refreshList() {
@@ -93,7 +96,13 @@
       b.className = (i === idx ? 'cur ' : '') + (best[i] ? (best[i] <= levels[i].par ? 'par' : 'done') : '');
     });
   }
+  $('daily').addEventListener('click', () => { daily = true; load(Daily.dailyIndex(new Date(), levels.length)); });
+  $('share').addEventListener('click', () => {
+    const text = Daily.shareText(new Date(), rule, CA.popcount(rule), lv.par, 'https://therealalexxx.github.io/rulehunt/#daily');
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+      () => { $('msg').textContent = 'Copied: ' + text.split('\n')[0]; }, () => { $('msg').textContent = text; });
+  });
   $('clear').addEventListener('click', () => { rule = 0; update(); });
-  $('prev').addEventListener('click', () => { if (idx > 0) load(idx - 1); });
-  $('next').addEventListener('click', () => { if (idx + 1 < levels.length) load(idx + 1); });
+  $('prev').addEventListener('click', () => { if (idx > 0) { daily = false; load(idx - 1); }; });
+  $('next').addEventListener('click', () => { if (idx + 1 < levels.length) { daily = false; load(idx + 1); }; });
 })();
