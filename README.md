@@ -5,6 +5,7 @@ reach after a few steps. Set the 8-entry rule table so it lands on the target.
 
 **Play:** https://therealalexxx.github.io/rulehunt/
 
+![rulehunt](screenshot.png)
 The rows wrap around. A cell looks at (left, centre, right) and the table says
 what it becomes, the same scheme as Wolfram's elementary rules, so the table is
 also a rule number from 0 to 255. Early levels need one step, which you can read
